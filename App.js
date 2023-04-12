@@ -1,38 +1,29 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { Text, View, StyleSheet, TextInput, Picker, Button } from 'react-native';
 import Constants from 'expo-constants';
 
-export default class App extends Component {
-  constructor(props){
-    super(props);
-    this.state = {
-      valor: 0,
-      valorConvertido: 0,
-      origem: "",
-      destino: ""
-    }
-    this.pegaValor = this.pegaValor.bind(this);
-    this.pegaOrigem = this.pegaOrigem.bind(this);
-    this.pegaDestino = this.pegaDestino.bind(this);
-    this.converterMoeda = this.converterMoeda.bind(this);
-  }
+export default function App(){
+  const [valor, setValor] = useState(0.0);
+  const [valorConvertido, setValorConvetido] = useState(0.0);
+  const [origem, setOrigem] = useState('');
+  const [destino, setDestino] = useState('');
 
-  pegaValor(valor){
-    this.setState({valor: valor});
+  function pegaValor(valor){
+    setValor(valor);
     document.getElementById("valor").style.display = "block";
   }
 
-  pegaOrigem(origem){
-    this.setState({origem: origem});
+  function pegaOrigem(origem){
+    setOrigem(origem);
     document.getElementById("origem").style.display = "block";
   }
 
-  pegaDestino(destino){
-    this.setState({destino: destino});
+  function pegaDestino(destino){
+    setDestino(destino);
     document.getElementById("destino").style.display = "block";
   }
 
-  converterMoeda(valor, origem, destino) {
+  function converterMoeda(valor, origem, destino) {
     const taxaConversao = {
       "Dólar": {
         "Real": 5.27,
@@ -48,57 +39,55 @@ export default class App extends Component {
       }
     };
     const taxa = taxaConversao[origem][destino];
-    return this.setState({valorConvertido: valor * taxa});
+    return setValorConvetido(valor * taxa);
   }
 
-  render(){
-    return (
-      <View style={styles.container}>
-        <Text style={styles.title}>
-          Conversor de Moedas 
-        </Text>
-        <Text style={styles.subtitle}>
-          Dólar, Real e Euro
-        </Text>
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>
+        Conversor de Moedas 
+      </Text>
+      <Text style={styles.subtitle}>
+        Dólar, Real e Euro
+      </Text>
 
-        <Text style={styles.label}>Valor: </Text>
-        <TextInput style={styles.inputs} placeholder="Digite o valor: " onChangeText={this.pegaValor}></TextInput>
+      <Text style={styles.label}>Valor: </Text>
+      <TextInput style={styles.inputs} placeholder="Digite o valor: " onChangeText={pegaValor}></TextInput>
 
-        <Text style={styles.label}>De: </Text>
-        <Picker  style={styles.inputs} selectedValue={this.state.origem} onValueChange={this.pegaOrigem}>
-          <Picker.Item key={1} value={""} label="Escolha uma moeda:"></Picker.Item>
-          <Picker.Item key={2} value={"Dólar"} label="Dólar"></Picker.Item>
-          <Picker.Item key={3} value={"Real"} label="Real"></Picker.Item>
-          <Picker.Item key={4} value={"Euro"} label="Euro"></Picker.Item>
-        </Picker>
+      <Text style={styles.label}>De: </Text>
+      <Picker  style={styles.inputs} selectedValue={origem} onValueChange={pegaOrigem}>
+        <Picker.Item key={1} value={""} label="Escolha uma moeda:"></Picker.Item>
+        <Picker.Item key={2} value={"Dólar"} label="Dólar"></Picker.Item>
+        <Picker.Item key={3} value={"Real"} label="Real"></Picker.Item>
+        <Picker.Item key={4} value={"Euro"} label="Euro"></Picker.Item>
+      </Picker>
 
-        <Text style={styles.label}>Para: </Text>
-        <Picker  style={styles.inputs} selectedValue={this.state.destino} onValueChange={this.pegaDestino}>
-          <Picker.Item key={1} value={""} label="Escolha uma moeda:"></Picker.Item>
-          <Picker.Item key={2} value={"Dólar"} label="Dólar"></Picker.Item>
-          <Picker.Item key={3} value={"Real"} label="Real"></Picker.Item>
-          <Picker.Item key={4} value={"Euro"} label="Euro"></Picker.Item>
-        </Picker>
+      <Text style={styles.label}>Para: </Text>
+      <Picker  style={styles.inputs} selectedValue={destino} onValueChange={pegaDestino}>
+        <Picker.Item key={1} value={""} label="Escolha uma moeda:"></Picker.Item>
+        <Picker.Item key={2} value={"Dólar"} label="Dólar"></Picker.Item>
+        <Picker.Item key={3} value={"Real"} label="Real"></Picker.Item>
+        <Picker.Item key={4} value={"Euro"} label="Euro"></Picker.Item>
+      </Picker>
 
-        <View style={styles.button}>
-          <Button title="Converter" onPress={() => this.converterMoeda(this.state.valor, this.state.origem, this.state.destino)}></Button>
-        </View>
-
-        <div style={{display: "none"}} id="valor">
-          <Text>Valor: {this.state.valor}</Text>
-        </div>
-
-        <div style={{display: "none"}} id="origem">
-          <Text>De: {this.state.origem}</Text>
-        </div>
-
-        <div style={{display: "none"}} id="destino">
-           <Text>Para: {this.state.destino}</Text>
-        </div>
-        <Text style={styles.resultado}>Resultado: {this.state.valorConvertido}</Text>
+      <View style={styles.button}>
+        <Button title="Converter" onPress={() => converterMoeda(valor, origem, destino)}></Button>
       </View>
-    );
-  }
+
+      <div style={{display: "none"}} id="valor">
+        <Text>Valor: {valor}</Text>
+      </div>
+
+      <div style={{display: "none"}} id="origem">
+        <Text>De: {origem}</Text>
+      </div>
+
+      <div style={{display: "none"}} id="destino">
+          <Text>Para: {destino}</Text>
+      </div>
+      <Text style={styles.resultado}>Resultado: {valorConvertido.toFixed(2)}</Text>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
